@@ -1,0 +1,122 @@
+<html>
+<head>
+	<title>CMS Client</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+	<!-- <script type="text/javascript" src="js/d3.js"></script>
+	<script type="text/javascript" src="js/chart.js"></script>
+	<script type="text/javascript" src="js/lodash.js"></script>
+	<script type="text/javascript" src="js/popper.js"></script>
+	<script type="text/javascript" src="js/axios.js"></script> -->
+	<script type="text/javascript" src="js/skripta.js"></script>
+	<style>
+		#charts {
+		  display: inline-block;
+		  position: relative;
+		  width: 30%;
+		}
+	  </style>
+</head>
+<body>
+	<div class="container-fluid text-center p-1 pull-right">
+		<button type="button" id="btnLogin" onclick="showLogin()" class="btn btn-lg btn-primary">Login</button>
+		<div id="logout" style="display:none" >
+			<br /><br />
+			<h3>Logout</h3>
+			<br />
+			<button class="btn btn-default btn-danger" onclick="logout()">Logout</button>
+			<p id="info"></p>
+		</div>
+		<br /><br />
+
+		<div id="loginForm" style="display:block">
+			<h3>Login</h3>
+			<form method="post" action="post/" id="loginForm" onsubmit="return loginUser()" class="form-control-sm">
+				<p><label>Username: <input type="text" id="usernameLogin" class="form-control"></label></p>
+				<p><label>Password: <input type="password" id="passwordLogin" class="form-control"></label></p>
+				<br />
+				<p><button class="btn btn-primary">Login</button></p>
+			</form>
+		</div>
+		<!-- <div id="registerForm" style="display:none">
+			<h3>Register</h3>
+			<form method="post" action="post/" id="registerForm" onsubmit="return registerUser()">
+				<p><label>Email: <input type="email" id="emailRegister" class="form-control"></label></p>
+				<p><label>Username: <input type="text" id="usernameRegister" class="form-control"></label></p>
+				<p><label>Password: <input type="password" id="passwordRegister" class="form-control"></label></p>
+				<p><label>Confirm password: <input type="password" id="confirmPasswordRegister" class="form-control"></label></p>
+				<br />
+				<p><button class="btn btn-success">Submit </button></p>
+
+			</form>
+			<p>Password value needs to meet following parameters:</p>
+			<ol style="display:inline-block;">
+				<li>
+					at least six characters
+				</li>
+				<li>
+					at least one numeric character
+				</li>
+				<li>
+					at least one non-alphanumeric character
+				</li>
+				<li>
+					at least one small leter
+				</li>
+				<li>
+					at least one capital letter
+				</li>
+			</ol>
+			<link />
+		</div> -->
+		<br />
+		<br />
+		<div id="formDiv" style="display:none" class="border border-primary border border-4 container-fluid text-center w-25">
+			<div  class="container-fluid text-center w-100">
+				<form method="post" action="post/" id="terminForm" onsubmit="return submitMasterForm()">
+					<p><label>Datum: <input id="Datum" class="form-control" input type="date"></label></p>
+					<p><label>Vreme: <input id="Datum" class="form-control" input type="time"></label></p>
+					<br />
+					<p><button class="btn btn-primary">Submit</button>|<button class="btn btn-danger" onclick="clearProdavciForm()">Cancel</button></p>
+				</form>
+			</div>
+			<div id="data" style="display:none" class="container-fluid text-center w-100">
+			</div>
+		</div>
+		<div   style="display:none" id="searchMasterForm">
+			<h3>Pretraga mastera:</h3>
+			<form method="post" action="post/" id="MasterForm" onsubmit="return submitSearchMasterForm()" style="display: flex; align-items: center; justify-content: center; ">
+				<div class="row text-center">
+					<div class="col-sm-4">
+					  <div class="form-group">
+						<label for="masterStart">Start:</label>
+						<input class="form-control form-control-sm" id="masterStart" type="number" min="0">
+					  </div>
+					</div>
+					<div class="col-sm-4">
+					  <div class="form-group">
+						<label for="masterKraj">Kraj:</label>
+						<input class="form-control form-control-sm" id="masterKraj" type="number" min="0">
+					  </div>
+					</div>
+					<div class="col-sm-4" >
+					  <div class="form-group">
+					  <br/>
+						<div class="input-group">
+						  <input type="submit" value="Pretraga" class="btn btn-sm btn-success mx-auto">
+						</div>
+					  </div>
+					</div>
+				  </div>
+			</form>
+		</div>
+ 			<div id="charts" >
+			<canvas id="line-chart"></canvas>
+			<br /> <br />
+			<canvas id="pie-chart"></canvas>
+			<br /> <br />
+			<div id="d3Div"></div>
+			<br /> <br /> 
+		</div>
+	</div>
+</body>
+</html>
