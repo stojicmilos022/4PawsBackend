@@ -14,109 +14,65 @@
 		  position: relative;
 		  width: 30%;
 		}
+		@media screen and (max-width: 768px) {
+  .app-wrapper {
+    display: flex;
+    flex-direction: column !important;
+  }
+}
 	  </style>
 </head>
 <body>
-	<div class="container-fluid text-center p-1 pull-right">
-		<button type="button" id="btnLogin" onclick="showLogin()" class="btn btn-lg btn-primary">Login</button>
+	<div class="row d-flex justify-content-center app-wrapper offset-1 offset-lg-0">
 		<div id="logout" style="display:none" >
-			<br /><br />
 			<h3>Logout</h3>
-			<br />
 			<button class="btn btn-default btn-danger" onclick="logout()">Logout</button>
 			<p id="info"></p>
 		</div>
 		<br /><br />
-
+	
 		<div id="loginForm" style="display:block">
-			<h3>Login</h3>
+			 <!-- <h3>Login</h3> -->
 			<form method="post" action="post/" id="loginForm" onsubmit="return loginUser()" class="form-control-sm">
 				<p><label>Username: <input type="text" id="usernameLogin" class="form-control"></label></p>
 				<p><label>Password: <input type="password" id="passwordLogin" class="form-control"></label></p>
 				<br />
-				<p><button class="btn btn-primary">Login</button></p>
+				<p><button  class="btn btn-primary">Login</button></p>
 			</form>
 		</div>
-		<!-- <div id="registerForm" style="display:none">
-			<h3>Register</h3>
-			<form method="post" action="post/" id="registerForm" onsubmit="return registerUser()">
-				<p><label>Email: <input type="email" id="emailRegister" class="form-control"></label></p>
-				<p><label>Username: <input type="text" id="usernameRegister" class="form-control"></label></p>
-				<p><label>Password: <input type="password" id="passwordRegister" class="form-control"></label></p>
-				<p><label>Confirm password: <input type="password" id="confirmPasswordRegister" class="form-control"></label></p>
-				<br />
-				<p><button class="btn btn-success">Submit </button></p>
-
-			</form>
-			<p>Password value needs to meet following parameters:</p>
-			<ol style="display:inline-block;">
-				<li>
-					at least six characters
-				</li>
-				<li>
-					at least one numeric character
-				</li>
-				<li>
-					at least one non-alphanumeric character
-				</li>
-				<li>
-					at least one small leter
-				</li>
-				<li>
-					at least one capital letter
-				</li>
-			</ol>
-			<link />
-		</div> -->
-		<br />
-		<br />
-		<div id="formDiv" style="display:none" class="border border-primary border border-4 container-fluid text-center w-25">
-			<div  class="container-fluid text-center w-100">
-				<form method="post" action="post/" id="terminForm" onsubmit="return submitMasterForm()">
-					<p><label>Datum: <input id="Datum" class="form-control" input type="date"></label></p>
-					<p><label>Vreme: <input id="Datum" class="form-control" input type="time"></label></p>
-					<br />
-					<p><button class="btn btn-primary">Submit</button>|<button class="btn btn-danger" onclick="clearProdavciForm()">Cancel</button></p>
-				</form>
-			</div>
-			<div id="data" style="display:none" class="container-fluid text-center w-100">
-			</div>
-		</div>
-		<div   style="display:none" id="searchMasterForm">
-			<h3>Pretraga mastera:</h3>
-			<form method="post" action="post/" id="MasterForm" onsubmit="return submitSearchMasterForm()" style="display: flex; align-items: center; justify-content: center; ">
-				<div class="row text-center">
-					<div class="col-sm-4">
-					  <div class="form-group">
-						<label for="masterStart">Start:</label>
-						<input class="form-control form-control-sm" id="masterStart" type="number" min="0">
-					  </div>
-					</div>
-					<div class="col-sm-4">
-					  <div class="form-group">
-						<label for="masterKraj">Kraj:</label>
-						<input class="form-control form-control-sm" id="masterKraj" type="number" min="0">
-					  </div>
-					</div>
-					<div class="col-sm-4" >
-					  <div class="form-group">
-					  <br/>
-						<div class="input-group">
-						  <input type="submit" value="Pretraga" class="btn btn-sm btn-success mx-auto">
-						</div>
-					  </div>
-					</div>
+	</div>	
+	<div id="formDiv" style="display:none" class="page-wrapper d-flex justify-content-center align-items-center">
+		
+		<div  class="row d-flex justify-content-center app-wrapper offset-1 offset-lg-0">
+				  <div class="col-10 col-lg-4 card m-3">
+					<form method="post" action="post/" id="terminForm" onsubmit="return submitTerminForm()">
+						<p><label>Datum: <input id="terminDate" class="form-control mr-1" input type="datetime-local"></label><button class="btn btn-primary">Dodaj Termin</button></p>
+						<!-- <p><label>Vreme: <input id="terminTime" class="form-control" input type="time"></label></p> -->
+						<br />
+						<!-- <p>|<button class="btn btn-danger" onclick="clearProdavciForm()">Cancel</button></p> -->
+					</form>
+						  <div id="data" style="display:none" class="text-center">
+						  </div>
 				  </div>
-			</form>
-		</div>
- 			<div id="charts" >
-			<canvas id="line-chart"></canvas>
-			<br /> <br />
-			<canvas id="pie-chart"></canvas>
-			<br /> <br />
-			<div id="d3Div"></div>
-			<br /> <br /> 
-		</div>
+				  <div class="col-10 col-lg-4 card  m-3">
+					<h1>SALON SLIKE</h1>
+					<input type="file" id="fileInput" />
+					<button onclick="uploadFile()">Upload to Google Drive</button>
+					<div id="uploadStatus"></div>
+				
+					<script src="your-js-file.js"></script>
+				  </div>
+				  <div class="col-10 col-lg-4 card m-3">
+					<h1>PSI SLIKE</h1>
+					<input type="file" id="fileInput" />
+					<button onclick="uploadFile()">Upload to Google Drive</button>
+					<div id="uploadStatus"></div>				
+					<script src="your-js-file.js"></script>
+				  </div>				
 	</div>
+</div>
+
+	<button type="button" id="btnLogin" onclick="showLogin()" class="btn btn-lg btn-primary" hidden>Login</button>
+	<button type="button" id="btnMasteri" onclick="loadTermin()" class="btn btn-lg btn-primary" hidden >masteri</button>
 </body>
 </html>

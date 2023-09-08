@@ -6,8 +6,9 @@ namespace PawsBackend.Models
     {
         public int Id { get; set; }
         [Required]
-        public string text { get; set; }
-
         public DateTime Datum { get; set; }
+
+        public string ?DatumString { get; set; }
+
     }
 }

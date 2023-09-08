@@ -65,9 +65,9 @@ function registerUser() {
 	return false;
 }
 
-window.onload = function() {
-	loadMasteri();
-};
+// window.onload = function() {
+// 	loadTermini();
+// };
 
 // prikaz forme za registraciju
 function showRegistration() {
@@ -103,8 +103,8 @@ function loginUser() {
 					alert("Successful login");
 					response.json().then(function (data) {
 						console.log(data);
-						document.getElementById("info").innerHTML = "Currently logged in user: <i>" + data.username + "<i/>.";
-						document.getElementById("logout").style.display = "block";
+						//document.getElementById("info").innerHTML = "Currently logged in user: <i>" + data.username + "<i/>.";
+						//document.getElementById("logout").style.display = "block";
 						document.getElementById("btnLogin").style.display = "none";
 
 						// koristimo Window sessionStorage Property za cuvanje key/value parova u browser-u
@@ -114,7 +114,7 @@ function loginUser() {
 						// dobavljanje tokena: token = sessionStorage.getItem(data.token);
 						//sessionStorage.setItem("token", data.token);
 						jwt_token = data.token;
-						loadTerminCreate();
+						loadTermin();
 						// loadSlave();
 						// LoadPretraga();
 					});
@@ -154,7 +154,7 @@ function LoadPretraga(){
 	document.getElementById("searchMasterForm").style.display = "block";
 }
 // prikaz autora
-function loadTerminCreate() {
+function loadTermin() {
 	document.getElementById("data").style.display = "block";
 	document.getElementById("loginForm").style.display = "none";
 	
@@ -227,7 +227,7 @@ function setTerminAuthorised(data) {
 
 	// ispis tabele
 	var table = document.createElement("table");
-	table.classList.add("table","table-bordered","table-striped","table-hover");
+	table.classList.add("table","table-sm","table-bordered","table-striped","table-hover");
 	var header = createHeader();
 	table.append(header);
 
@@ -239,9 +239,7 @@ function setTerminAuthorised(data) {
 		var row = document.createElement("tr");
 		// prikaz podataka
 
-		row.appendChild(createTableCell(data[i].text));
-
-
+		row.appendChild(createTableCell(data[i].datumString));
 
 		// prikaz dugmadi za izmenu i brisanje
 		var stringId = data[i].id.toString();
@@ -249,7 +247,7 @@ function setTerminAuthorised(data) {
 		var buttonDelete = document.createElement("button");
 		buttonDelete.name = stringId;
 		buttonDelete.classList.add("btn", "btn-danger","align-middle","d-flex", "justify-content-center");
-		buttonDelete.addEventListener("click", deleteMaster);
+		buttonDelete.addEventListener("click", deleteTermin);
 		var buttonDeleteText = document.createTextNode("Delete");
 		buttonDelete.appendChild(buttonDeleteText);
 		var buttonDeleteCell = document.createElement("td");
@@ -270,7 +268,7 @@ function setTerminAuthorised(data) {
 		tableBody.appendChild(row);		
 	}
 
-	
+
 
 	table.appendChild(tableBody);
 	div.appendChild(table);
@@ -375,43 +373,36 @@ function createTableCell(text) {
 	cell.appendChild(cellText);
 	return cell;
 }
-function validateMasterForm(masterName, masterPrice, masterYear,mesto) {
-	if (masterName.length === 0) {
-		alert("Name field can not be empty.");
-		return false;
-	} else if (masterPrice.length === 0) {
-		alert("Price field can not be empty.");
-		return false;
-	} else if (masterYear.length === 0) {
-		alert("Year field can not be empty.");
-		return false;
-	} else if (mesto.length === 0) {
-		alert("mesto field can not be empty.");
+function validateTerminForm(terminDate) {
+
+	const currentDateTime = new Date();
+    //const currentTime = `${currentDate.getHours()}:${currentDate.getMinutes()}`;
+
+            // Combine the selected date and time into a single DateTime object
+	const selectedDatetime = new Date(document.getElementById("terminDate").value);
+	if (selectedDatetime < currentDateTime) {
+		alert("Date and time cannot be in the past.");
 		return false;
 	} 
 	return true;
 }
 // dodavanje novog autora
-function submitMasterForm(){
+function submitTerminForm(){
 
-	var masterName = document.getElementById("masterName").value;
-	var masterPrice = document.getElementById("masterPrice").value;
-	var masterYear = document.getElementById("masterYear").value;
-	var masterSlaveId=document.getElementById("mesto").value;
+	var terminDate = document.getElementById("terminDate").value;
+	//var Vreme = document.getElementById("terminVreme").value;
+
 
 	var httpAction;
 	var sendData;
 	var url;
-	if (validateMasterForm(masterName, masterPrice, masterYear,mesto))
+	if (validateTerminForm(terminDate))
 	{
 		if (formAction === "Create") {
 			httpAction = "POST";
-			url = host + port + masterEndpoint;
+			url = host + port + terminEndpoint;
 			sendData = {
-				"Name": masterName,
-				"Price": masterPrice,
-				"Year":masterYear,
-				"SlaveId":masterSlaveId
+				"Datum": terminDate,
 			};
 		}
 		else {
@@ -419,10 +410,7 @@ function submitMasterForm(){
 			url = host + port + masterEndpoint + editingId.toString();
 			sendData = {
 				"Id": editingId,
-				"Name": masterName,
-				"Price": masterPrice,
-				"Year":masterYear,
-				"SlaveId":masterSlaveId
+				"Datum": terminDate,
 			};
 		}
 	
@@ -457,11 +445,11 @@ function submitMasterForm(){
 
 
 // brisanje autora
-function deleteMaster() {
+function deleteTermin() {
 	// izvlacimo {id}
 	var deleteID = this.name;
 	// saljemo zahtev 
-	var url = host + port + masterEndpoint + deleteID.toString();
+	var url = host + port + terminEndpoint + deleteID.toString();
 	var headers = { 'Content-Type': 'application/json' };
 	if (jwt_token) {
 		headers.Authorization = 'Bearer ' + jwt_token;		// headers.Authorization = 'Bearer ' + sessionStorage.getItem(data.token);
@@ -515,9 +503,9 @@ function editMaster(){
 // osvezi prikaz tabele
 function refreshTable() {
 	// cistim formu
-	document.getElementById("masterName").value = "";
-	document.getElementById("masterPrice").value = "";
-	document.getElementById("masterYear").value = "";
+	// document.getElementById("masterName").value = "";
+	// document.getElementById("masterPrice").value = "";
+	// document.getElementById("masterYear").value = "";
 	//document.getElementById("prodavacProdavnica").value = "";
 	// osvezavam
 	document.getElementById("btnMasteri").click();
@@ -581,4 +569,31 @@ function submitSearchMasterForm() {
 		})
 		.catch(error => console.log(error));
 	return false;
+}
+
+function uploadFile() {
+    const fileInput = document.getElementById('fileInput');
+    const uploadStatus = document.getElementById('uploadStatus');
+
+    const file = fileInput.files[0];
+
+    if (!file) {
+        uploadStatus.innerText = 'Please select a file.';
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+        uploadStatus.innerText = `File uploaded to Google Drive. File ID: ${data.fileId}`;
+    })
+    .catch(error => {
+        uploadStatus.innerText = `Error: ${error.message}`;
+    });
 }

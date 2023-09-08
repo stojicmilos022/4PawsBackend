@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace PawsBackend.Models
 {
@@ -17,6 +18,9 @@ namespace PawsBackend.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //modelBuilder.Entity<Termin>()
+            //.Property(e => e.Datum)
+            //.HasColumnType("date");
             //modelBuilder.Entity<Prodavnica>().HasData(
             //    new Prodavnica() { Id = 1, Name = "Maxi", Adress="Kralja petra 1 78" },
             //    new Prodavnica() { Id = 2, Name = "Idea", Adress="Novosadski put 26" }

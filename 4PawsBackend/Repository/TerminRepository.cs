@@ -2,6 +2,8 @@
 using PawsBackend.Models;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Globalization;
+using System.Drawing.Text;
+using System.Linq;
 
 namespace PawsBackend.Repository
 {
@@ -20,21 +22,27 @@ namespace PawsBackend.Repository
 
         public void AddTermin(Termin termin)
         {
-            //Termin termin=new Termin();
+
+            termin.DatumString= termin.Datum.ToString("dd.MM.yyyy HH:mm");
+
             //    termin.TerminTekst = terminP;
-            termin.Datum = DateTime.Parse(termin.text);
+            //termin.Datum = DateTime.Parse(termin.text);
             _context.Termin.Add(termin);
             _context.SaveChanges();
         }
 
         public void DeleteTermin(Termin termin)
         {
-            throw new NotImplementedException();
+            _context.Termin.Remove(termin);
+            _context.SaveChanges();
         }
 
         public IQueryable<Termin> GetAll()
         {
-            return _context.Termin;
+            var recordsToRemove = _context.Termin.Where(u => u.Datum < DateTime.Now).ToList();
+            _context.Termin.RemoveRange(recordsToRemove);
+            _context.SaveChanges();
+            return _context.Termin.OrderBy(u=>u.Datum);
         }
     }
 }

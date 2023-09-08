@@ -48,7 +48,7 @@ namespace PawsBackend.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        [Route("4paws/api/createTermin")]
+        //[Route("4paws/api/createTermin")]
         public IActionResult AddTermin(Termin termin)
         {
             //if (!ModelState.IsValid)
@@ -56,9 +56,22 @@ namespace PawsBackend.Controllers
             //    return BadRequest(ModelState);
             //}
             //Termin termin=new Termin();
-            //termin.TerminTekst = text;
+            //termin.DatumString = termin.Datum.ToString("dd.MM.yyyy HH:mm");
             _terminRepository.AddTermin(termin); 
                    return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteTermin(int id)
+        {
+            var termin = _terminRepository.GetById(id);
+            if (termin == null)
+            {
+                return NotFound();
+            }
+
+            _terminRepository.DeleteTermin(termin);
+            return NoContent();
         }
     }
 }
