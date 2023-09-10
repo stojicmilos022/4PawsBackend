@@ -21,39 +21,7 @@ namespace PawsBackend.Models
             //modelBuilder.Entity<Termin>()
             //.Property(e => e.Datum)
             //.HasColumnType("date");
-            //modelBuilder.Entity<Prodavnica>().HasData(
-            //    new Prodavnica() { Id = 1, Name = "Maxi", Adress="Kralja petra 1 78" },
-            //    new Prodavnica() { Id = 2, Name = "Idea", Adress="Novosadski put 26" }
 
-            //);
-
-            //modelBuilder.Entity<Prodavci>().HasData(
-            //    new Prodavci()
-            //    {
-            //        Id = 1,
-            //        Name = "Pera",
-            //        LastName="Peric",
-            //        BirthYear = 1985,
-            //        ProdavnicaId = 1,
-            //    },
-            //    new Prodavci()
-            //    {
-            //        Id = 2,
-            //        Name = "Zika",
-            //        LastName = "Zikic",
-            //        BirthYear = 1990,
-            //        ProdavnicaId = 1,
-            //    },
-            //    new Prodavci()
-            //    {
-            //        Id = 3,
-            //        Name = "Mika",
-            //        LastName = "Mikic",
-            //        BirthYear = 1985,
-            //        ProdavnicaId = 2,
-            //    }
-
-            //);
 
             base.OnModelCreating(modelBuilder);
         }

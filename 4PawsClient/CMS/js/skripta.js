@@ -105,7 +105,7 @@ function loginUser() {
 						console.log(data);
 						//document.getElementById("info").innerHTML = "Currently logged in user: <i>" + data.username + "<i/>.";
 						//document.getElementById("logout").style.display = "block";
-						document.getElementById("btnLogin").style.display = "none";
+						//document.getElementById("btnLogin").style.display = "none";
 
 						// koristimo Window sessionStorage Property za cuvanje key/value parova u browser-u
 						// sessionStorage cuva podatke za samo jednu sesiju
@@ -114,6 +114,8 @@ function loginUser() {
 						// dobavljanje tokena: token = sessionStorage.getItem(data.token);
 						//sessionStorage.setItem("token", data.token);
 						jwt_token = data.token;
+						document.body.innerHTML = '';
+						window.location.href = "index.html"
 						loadTermin();
 						// loadSlave();
 						// LoadPretraga();
