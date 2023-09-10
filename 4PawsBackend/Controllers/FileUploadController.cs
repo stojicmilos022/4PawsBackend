@@ -1,7 +1,9 @@
 ﻿using Google.Apis.Auth.OAuth2;
 using Google.Apis.Drive.v3;
+using Google.Apis.Drive.v3.Data;
 using Google.Apis.Services;
 using Google.Cloud.Storage.V1;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -10,12 +12,17 @@ using System.Threading.Tasks;
 
 namespace _4PawsBackend.Controllers
 {
+    [Authorize]
+    [Produces("application/json")]
     [Route("api")]
+    [ApiController]
     public class FileUploadController : ControllerBase
     {
         [HttpPost("upload")]
-        public async Task<IActionResult> UploadFile(IFormFile file,string bucketName)
+        [AllowAnonymous]
+        public async Task<IActionResult> UploadFile(IFormFile file)
         {
+            string bucketName = "slikesalona";
             if (file == null || file.Length == 0)
             {
                 return BadRequest("Please select a file to upload.");

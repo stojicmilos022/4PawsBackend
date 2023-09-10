@@ -1,7 +1,7 @@
 ﻿// podaci od interesa
 var host = "https://localhost:";
 var port = "7184/";
-var slaveEndpoint = "api/slave/";
+var uploadEndpoint = "api/upload/";
 var terminEndpoint="api/Termin/"
 var pretragaEndpoint = "api/masteri/pretraga";
 var loginEndpoint = "api/authentication/login";
@@ -65,9 +65,9 @@ function registerUser() {
 	return false;
 }
 
-// window.onload = function() {
-// 	loadTermini();
-// };
+window.onload = function() {
+	loadTermin();
+};
 
 // prikaz forme za registraciju
 function showRegistration() {
@@ -114,7 +114,8 @@ function loginUser() {
 						// dobavljanje tokena: token = sessionStorage.getItem(data.token);
 						//sessionStorage.setItem("token", data.token);
 						jwt_token = data.token;
-						document.body.innerHTML = '';
+						sessionStorage.setItem("jwt_token", data.token);
+						//document.body.innerHTML = '';
 						window.location.href = "index.html"
 						loadTermin();
 						// loadSlave();
@@ -158,12 +159,13 @@ function LoadPretraga(){
 // prikaz autora
 function loadTermin() {
 	document.getElementById("data").style.display = "block";
-	document.getElementById("loginForm").style.display = "none";
+	//document.getElementById("loginForm").style.display = "none";
 	
 
 	// ucitavanje autora
 	var requestUrl = host + port + terminEndpoint;
 	console.log("URL zahteva: " + requestUrl);
+	var jwt_token = sessionStorage.getItem("jwt_token");
 	var headers = {};
 	if (jwt_token) {
 		headers.Authorization = 'Bearer ' + jwt_token;			// headers.Authorization = 'Bearer ' + sessionStorage.getItem(data.token);
@@ -290,7 +292,7 @@ function setTerminUnAuthorised(data) {
 	// ispis naslova
 	var div = document.createElement("div");
 	var h1 = document.createElement("h1");
-	var headingText = document.createTextNode("Masteri");
+	var headingText = document.createTextNode("Termini");
 	h1.appendChild(headingText);
 	div.appendChild(h1);
 
@@ -307,10 +309,7 @@ function setTerminUnAuthorised(data) {
 		// prikazujemo novi red u tabeli
 		var row = document.createElement("tr");
 		// prikaz podataka
-		row.appendChild(createTableCell(data[i].name));
-		row.appendChild(createTableCell(data[i].mestoName));
-		row.appendChild(createTableCell(data[i].year));
-		row.appendChild(createTableCell(data[i].price));
+		row.appendChild(createTableCell(data[i].datumString));
 
 		// prikaz dugmadi za izmenu i brisanje
 
@@ -359,10 +358,7 @@ function createHeaderUnAuth() {
 	var thead = document.createElement("thead");
 	var row = document.createElement("tr");
 	
-	row.appendChild(createTableCell("Id"));
-	row.appendChild(createTableCell("Name"));
-	row.appendChild(createTableCell("Last Name"));
-	row.appendChild(createTableCell("Price"));
+	row.appendChild(createTableCell("Datum i vreme za termin"));
 
 	thead.appendChild(row);
 	return thead;
@@ -574,6 +570,8 @@ function submitSearchMasterForm() {
 }
 
 function uploadFile() {
+	var url = host + port + uploadEndpoint;
+	var headers = { 'Content-Type': 'application/json' };
     const fileInput = document.getElementById('fileInput');
     const uploadStatus = document.getElementById('uploadStatus');
 
@@ -583,13 +581,25 @@ function uploadFile() {
         uploadStatus.innerText = 'Please select a file.';
         return;
     }
-
+	
     const formData = new FormData();
     formData.append('file', file);
+	console.log(formData);
+	
+	if (jwt_token) {
+		headers.Authorization = 'Bearer ' + jwt_token;		// headers.Authorization = 'Bearer ' + sessionStorage.getItem(data.token);
+	}
 
-    fetch('/api/upload', {
+
+    // fetch(url, {
+    //     method: 'POST',
+	// 	headers: headers,
+    //     body: formData,
+    // })
+	fetch(url, {
         method: 'POST',
-        body: formData,
+		headers: headers,
+        body: formData
     })
     .then(response => response.json())
     .then(data => {

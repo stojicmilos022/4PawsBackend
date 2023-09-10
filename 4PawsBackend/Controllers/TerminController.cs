@@ -47,7 +47,7 @@ namespace PawsBackend.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
+
         //[Route("4paws/api/createTermin")]
         public IActionResult AddTermin(Termin termin)
         {
