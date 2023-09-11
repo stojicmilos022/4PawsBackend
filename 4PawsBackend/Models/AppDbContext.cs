@@ -12,6 +12,7 @@ namespace PawsBackend.Models
     public class AppDbContext: IdentityDbContext<ApplicationUser>
     {
         public DbSet<Termin> Termin { get; set; }
+        public DbSet<Salon> SalonSlike { get; set; }
         //public DbSet<Prodavci> Prodavci { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }

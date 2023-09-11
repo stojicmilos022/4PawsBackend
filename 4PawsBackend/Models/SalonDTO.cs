@@ -1,6 +1,6 @@
-﻿namespace _4PawsBackend.Models
+﻿namespace PawsBackend.Models
 {
-    public class Slike
+    public class SalonDTO
     {
         public int Id { get; set; }
 
