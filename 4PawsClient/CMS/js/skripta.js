@@ -1,7 +1,7 @@
 ﻿// podaci od interesa
 var host = "https://localhost:";
 var port = "7184/";
-var uploadEndpoint = "api/upload/";
+var salonEndpoint = "api/Salon";
 var terminEndpoint="api/Termin/"
 var pretragaEndpoint = "api/masteri/pretraga";
 var loginEndpoint = "api/authentication/login";
@@ -67,6 +67,7 @@ function registerUser() {
 
 window.onload = function() {
 	loadTermin();
+	fetchSalonImages();
 };
 
 // prikaz forme za registraciju
@@ -388,6 +389,7 @@ function validateTerminForm(terminDate) {
 function submitTerminForm(){
 
 	var terminDate = document.getElementById("terminDate").value;
+	var jwt_token = sessionStorage.getItem("jwt_token");
 	//var Vreme = document.getElementById("terminVreme").value;
 
 
@@ -570,10 +572,11 @@ function submitSearchMasterForm() {
 }
 
 function uploadFile() {
-	var url = host + port + uploadEndpoint;
-	var headers = { 'Content-Type': 'application/json' };
+    var url = host + port + salonEndpoint;
+    //var headers = { 'Content-Type': 'application/json' };
     const fileInput = document.getElementById('fileInput');
     const uploadStatus = document.getElementById('uploadStatus');
+    var jwt_token = sessionStorage.getItem("jwt_token");
 
     const file = fileInput.files[0];
 
@@ -581,31 +584,64 @@ function uploadFile() {
         uploadStatus.innerText = 'Please select a file.';
         return;
     }
-	
+
     const formData = new FormData();
     formData.append('file', file);
-	console.log(formData);
-	
-	if (jwt_token) {
-		headers.Authorization = 'Bearer ' + jwt_token;		// headers.Authorization = 'Bearer ' + sessionStorage.getItem(data.token);
-	}
 
+    // if (jwt_token) {
+    //     headers.Authorization = 'Bearer ' + jwt_token;
+    // }
 
-    // fetch(url, {
-    //     method: 'POST',
-	// 	headers: headers,
-    //     body: formData,
-    // })
-	fetch(url, {
+    fetch(url, {
         method: 'POST',
-		headers: headers,
+		headers: {
+			Authorization: `Bearer ${jwt_token}`},
         body: formData
     })
-    .then(response => response.json())
-    .then(data => {
-        uploadStatus.innerText = `File uploaded to Google Drive. File ID: ${data.fileId}`;
-    })
-    .catch(error => {
-        uploadStatus.innerText = `Error: ${error.message}`;
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP Error! Status: ${response.status}`);
+            }
+            return response.json(); // Try to parse the response as JSON
+        })
+        .then(data => {
+            // Check if the response contains valid JSON
+            if (data && data.fileId) {
+                uploadStatus.innerText = `File uploaded to Google Drive. File ID: ${data.fileId}`;
+            } else {
+                uploadStatus.innerText = 'Unexpected response format.';
+            }
+        })
+        .catch(error => {
+            uploadStatus.innerText = `Error: ${error.message}`;
+        });
 }
+
+
+function displaySalonImages(imagePaths) {
+    const imageContainer = document.getElementById('salonContainer');
+
+    // Clear existing images
+    imageContainer.innerHTML = '';
+
+    // Loop through the image paths and create image elements
+    imagePaths.forEach(imagePath => {
+      const imgElement = document.createElement('img');
+      imgElement.src = imagePath.path;
+      imgElement.alt = 'Image';
+      imgElement.className = 'img-thumbnail img-fluid';
+      imageContainer.appendChild(imgElement);
+    });
+  }
+
+  function fetchSalonImages() {
+	var url = host + port + salonEndpoint;
+    fetch(url) 
+      .then(response => response.json())
+      .then(data => {
+		data.imagePath=
+        displaySalonImages(data); // Display the images
+      })
+      .catch(error => console.error(error));
+  }
+  

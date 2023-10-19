@@ -9,7 +9,7 @@ namespace PawsBackend.Interfaces
 
         Salon GetById(int id);
 
-        void AddSalonSlika(IFormFile file);
+        void AddSalonSlika(string fullPath);
 
         void DeleteTermin(Salon salon);
     }

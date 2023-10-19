@@ -5,9 +5,21 @@ namespace PawsBackend.Repository
 {
     public class SalonRepository : ISalonRepository
     {
-        public void AddSalonSlika(IFormFile file)
+        private readonly AppDbContext _context;
+        public SalonRepository(AppDbContext context)
         {
-            throw new NotImplementedException();
+            this._context = context;
+        }
+        public void AddSalonSlika(string fullPath)
+        {
+            Salon salon= new Salon();
+            salon.Path = fullPath;
+            //termin.DatumString = termin.Datum.ToString("dd.MM.yyyy HH:mm");
+
+            //    termin.TerminTekst = terminP;
+            //termin.Datum = DateTime.Parse(termin.text);
+            _context.SalonSlike.Add(salon);
+            _context.SaveChanges();
         }
 
         public void DeleteTermin(Salon salon)
@@ -17,7 +29,8 @@ namespace PawsBackend.Repository
 
         public IQueryable<Salon> GetAll()
         {
-            throw new NotImplementedException();
+
+            return _context.SalonSlike;
         }
 
         public Salon GetById(int id)
