@@ -448,6 +448,7 @@ function submitTerminForm(){
 function deleteTermin() {
 	// izvlacimo {id}
 	var deleteID = this.name;
+	var jwt_token = sessionStorage.getItem("jwt_token");
 	// saljemo zahtev 
 	var url = host + port + terminEndpoint + deleteID.toString();
 	var headers = { 'Content-Type': 'application/json' };
@@ -571,31 +572,79 @@ function submitSearchMasterForm() {
 	return false;
 }
 
-function uploadFile() {
+// function uploadFile() {
+//     var url = host + port + salonEndpoint;
+//     //var headers = { 'Content-Type': 'application/json' };
+//     const fileInput = document.getElementById('fileInput');
+//     const uploadStatus = document.getElementById('uploadStatus');
+//     var jwt_token = sessionStorage.getItem("jwt_token");
+
+//     const file = fileInput.files[0];
+
+//     if (!file) {
+//         uploadStatus.innerText = 'Please select a file.';
+//         return;
+//     }
+
+//     const formData = new FormData();
+//     formData.append('file', file);
+
+//     // if (jwt_token) {
+//     //     headers.Authorization = 'Bearer ' + jwt_token;
+//     // }
+
+//     fetch(url, {
+//         method: 'POST',
+// 		headers: {
+// 			Authorization: `Bearer ${jwt_token}`},
+//         body: formData
+//     })
+//         .then(response => {
+//             if (!response.ok) {
+//                 throw new Error(`HTTP Error! Status: ${response.status}`);
+//             }
+//             return response.json(); // Try to parse the response as JSON
+//         })
+//         .then(data => {
+//             // Check if the response contains valid JSON
+// 			console.log(data);
+//             if (data) {
+//                 uploadStatus.innerText = `File uploaded to Google Drive. File ID: ${data}`;
+// 				fetchSalonImages();
+//             } else {
+//                 uploadStatus.innerText = 'Unexpected response format.';
+//             }
+//         })
+//         .catch(error => {
+//             uploadStatus.innerText = `Error: ${error.message}`;
+//         });
+// }
+
+
+function uploadFiles() {
     var url = host + port + salonEndpoint;
-    //var headers = { 'Content-Type': 'application/json' };
     const fileInput = document.getElementById('fileInput');
     const uploadStatus = document.getElementById('uploadStatus');
     var jwt_token = sessionStorage.getItem("jwt_token");
 
-    const file = fileInput.files[0];
+    const files = fileInput.files;
 
-    if (!file) {
-        uploadStatus.innerText = 'Please select a file.';
+    if (files.length === 0) {
+        uploadStatus.innerText = 'Please select one or more files.';
         return;
     }
 
     const formData = new FormData();
-    formData.append('file', file);
 
-    // if (jwt_token) {
-    //     headers.Authorization = 'Bearer ' + jwt_token;
-    // }
+    for (let i = 0; i < files.length; i++) {
+        formData.append('files', files[i]); // Use an array of files, e.g., 'files[]'
+    }
 
     fetch(url, {
         method: 'POST',
-		headers: {
-			Authorization: `Bearer ${jwt_token}`},
+        headers: {
+            Authorization: `Bearer ${jwt_token}`,
+        },
         body: formData
     })
         .then(response => {
@@ -606,8 +655,14 @@ function uploadFile() {
         })
         .then(data => {
             // Check if the response contains valid JSON
-            if (data && data.fileId) {
-                uploadStatus.innerText = `File uploaded to Google Drive. File ID: ${data.fileId}`;
+            console.log(data);
+			if (data) {
+                if (Array.isArray(data)) {
+                    uploadStatus.innerText = `Files uploaded to Google Drive. File IDs: ${data.join(', ')}`;
+                } else {
+                    uploadStatus.innerText = `File uploaded to Google Drive. File ID: ${data}`;
+                }
+                fetchSalonImages();
             } else {
                 uploadStatus.innerText = 'Unexpected response format.';
             }
@@ -616,7 +671,6 @@ function uploadFile() {
             uploadStatus.innerText = `Error: ${error.message}`;
         });
 }
-
 
 function displaySalonImages(imagePaths) {
     const imageContainer = document.getElementById('salonContainer');
@@ -630,7 +684,21 @@ function displaySalonImages(imagePaths) {
       imgElement.src = imagePath.path;
       imgElement.alt = 'Image';
       imgElement.className = 'img-thumbnail img-fluid';
-      imageContainer.appendChild(imgElement);
+
+	  const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+		console.log(imagePath.id);
+		deleteButton.name=imagePath.id;
+        deleteButton.onclick = function() {
+            deleteImage(imagePath);
+			 // Call the deleteImage function with the image path
+        };
+	  const imageDiv = document.createElement('div');
+	  imageDiv.appendChild(imgElement);
+	  imageDiv.appendChild(deleteButton);
+
+      imageContainer.appendChild(imageDiv);
+	  
     });
   }
 
@@ -644,4 +712,40 @@ function displaySalonImages(imagePaths) {
       })
       .catch(error => console.error(error));
   }
+
+  function deleteImage(imagePath) {
+    // Make an API request to delete the image using the image path
+    // You'll need to implement this part
+	var jwt_token = sessionStorage.getItem("jwt_token");
+	var deleteID = imagePath.id;
+	console.log(deleteID);
+	var url = host + port + salonEndpoint+"/"+deleteID.toString();
+    // fetch(url, {
+    //     method: 'DELETE',
+    //     body: JSON.stringify({ deleteID }), // Send the image path to your API
+    //     headers: {
+    //         'Content-Type': 'application/json'
+    //     }
+    // })
+    // .then(response => {
+    //     // Handle the response from the API, e.g., removing the image element from the webpage
+    // })
+    // .catch(error => console.error(error));
+	var headers = { 'Content-Type': 'application/json' };
+	if (jwt_token) {
+		headers.Authorization = 'Bearer ' + jwt_token;		// headers.Authorization = 'Bearer ' + sessionStorage.getItem(data.token);
+	}
+	fetch(url, { method: "DELETE", headers: headers})
+		.then((response) => {
+			if (response.status === 204) {
+				console.log("Successful action");
+				fetchSalonImages();
+				//refreshTable();
+			} else {
+				console.log("Error occured with code " + response.status);
+				alert("Desila se greska!");
+			}
+		})
+		.catch(error => console.log(error));
+}      
   

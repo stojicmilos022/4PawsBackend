@@ -22,9 +22,10 @@ namespace PawsBackend.Repository
             _context.SaveChanges();
         }
 
-        public void DeleteTermin(Salon salon)
+        public void DeleteSalon(Salon salon)
         {
-            throw new NotImplementedException();
+            _context.SalonSlike.Remove(salon);
+            _context.SaveChanges();
         }
 
         public IQueryable<Salon> GetAll()
@@ -35,7 +36,7 @@ namespace PawsBackend.Repository
 
         public Salon GetById(int id)
         {
-            throw new NotImplementedException();
+            return _context.SalonSlike.FirstOrDefault(p => p.Id == id);
         }
     }
 }

@@ -11,6 +11,6 @@ namespace PawsBackend.Interfaces
 
         void AddSalonSlika(string fullPath);
 
-        void DeleteTermin(Salon salon);
+        void DeleteSalon(Salon salon);
     }
 }
