@@ -1,16 +1,13 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Drive.v3;
 using Google.Cloud.Storage.V1;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PawsBackend.Interfaces;
-using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Routing.Constraints;
 using PawsBackend.Models;
 using PawsBackend.Repository;
-using AutoMapper.QueryableExtensions;
 
 namespace PawsBackend.Controllers
 {
@@ -18,30 +15,27 @@ namespace PawsBackend.Controllers
     [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
-    public class SalonController : ControllerBase
+    public class GaleryController : ControllerBase
     {
-        private readonly ISalonRepository _salonRepository;
+        private readonly IGaleryRepository _galeryRepository;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
 
-        public SalonController(ISalonRepository SalonRepository, IMapper mapper, IConfiguration configuration)
+        public GaleryController(IGaleryRepository GaleryRepository, IMapper mapper, IConfiguration configuration)
         {
-            _salonRepository = SalonRepository;
+            _galeryRepository = GaleryRepository;
             _configuration = configuration;
             _mapper = mapper;
             _configuration = configuration;
-
         }
-
-
 
 
         [HttpPost]
         [AllowAnonymous]
-   
+
         public async Task<IActionResult> UploadFiles(List<IFormFile> files)
         {
-            string bucketName = "slikesalona";
+            string bucketName = "slikegalery";
             List<string> fileIds = new List<string>();
 
             if (files == null || files.Count == 0)
@@ -53,7 +47,7 @@ namespace PawsBackend.Controllers
             {
                 if (file.Length == 0)
                 {
-                   
+
                     continue;
                 }
 
@@ -64,7 +58,7 @@ namespace PawsBackend.Controllers
                     string fExt = Path.GetExtension(file.FileName);
                     string fullPath = $"https://storage.cloud.google.com/{bucketName}/{fName}";
 
-                    _salonRepository.AddSalonSlika(fullPath,fName);
+                    _galeryRepository.AddGalerySlika(fullPath, fName);
                     fileIds.Add(fileId);
                 }
                 catch (Exception ex)
@@ -81,38 +75,7 @@ namespace PawsBackend.Controllers
             {
                 return BadRequest("No files were successfully uploaded.");
             }
-            //some test comment 
-            //try
-            //{
-            //    var fileId=await FileUpload.UploadToGoogle(file, bucketName);
-            //    string fName=Path.GetFileName(file.FileName);
-            //    string fExt=Path.GetExtension(file.Name);
-            //    string fullPath = @"https://storage.cloud.google.com/slikesalona/"+fName;
-
-            //    _salonRepository.AddSalonSlika(fullPath);
-            //    //string appDomainBaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            //    ////var serviceAccountEmail = "vaskozabata@paws-398316.iam.gserviceaccount.com";
-            //    ////string bucketName = "slikesalona";
-            //    //var serviceAccountKeyPath = _configuration["GoogleApi:ApiKeyPath"]; ;
-
-            //    //var credential = GoogleCredential.FromFile(serviceAccountKeyPath)
-            //    //    .CreateScoped(DriveService.Scope.Drive);
-
-            //    //var storageClient = StorageClient.Create(credential);
-
-            //    //using (var stream = file.OpenReadStream())
-            //    //{
-            //    //    string fileExtension = Path.GetExtension(file.FileName);
-            //    //    string fileName = Path.GetFileName(file.FileName);
-            //    //    var uploadObject = await storageClient.UploadObjectAsync(bucketName, fileName, fileExtension, stream);
-            //    //    return Ok(new { fileId = uploadObject.Name });
-            //    //}
-            //    return Ok(fileId);
-            //}
-            //catch (Exception ex)
-            //{
-            //    return StatusCode(500, $"Error: {ex.Message}");
-            //}
+            
         }
 
         [HttpGet]
@@ -120,22 +83,22 @@ namespace PawsBackend.Controllers
         public IActionResult GetAll()
         {
 
-            return Ok(_salonRepository.GetAll().ProjectTo<SalonDTO>(_mapper.ConfigurationProvider).ToList());
+            return Ok(_galeryRepository.GetAll().ProjectTo<GaleryDTO>(_mapper.ConfigurationProvider).ToList());
         }
 
         [HttpDelete("{id}")]
         [AllowAnonymous]
         public IActionResult DeleteSalon(int id)
         {
-             var salon = _salonRepository.GetById(id);
-            if (salon == null)
+            var galery = _galeryRepository.GetById(id);
+            if (galery == null)
             {
                 return NotFound();
             }
 
-            _salonRepository.DeleteSalon(salon);
-            string bucketName = "slikesalona";
-            string ?objectName = salon.FileName;
+            _galeryRepository.DeleteGalery(galery);
+            string bucketName = "slikegalery";
+            string? objectName = galery.FileName;
             GoogleCredential credential = GoogleCredential.FromFile("C:\\Source\\WebDevelopment\\4PawsBackend\\4PawsBackend\\paws-398316-cba858c90847.json");
             var storageClient = StorageClient.Create(credential);
 
@@ -148,13 +111,13 @@ namespace PawsBackend.Controllers
         [AllowAnonymous]
         public IActionResult GetSalon(int id)
         {
-            var Salon = _salonRepository.GetById(id);
-            if (Salon == null)
+            var Galery = _galeryRepository.GetById(id);
+            if (Galery == null)
             {
                 return NotFound();
             }
 
-            return Ok(_mapper.Map<SalonDTO>(Salon));
+            return Ok(_mapper.Map<GaleryDTO>(Galery));
         }
     }
 }

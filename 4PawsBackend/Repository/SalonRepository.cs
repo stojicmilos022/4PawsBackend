@@ -10,10 +10,11 @@ namespace PawsBackend.Repository
         {
             this._context = context;
         }
-        public void AddSalonSlika(string fullPath)
+        public void AddSalonSlika(string fullPath, string fileName)
         {
             Salon salon= new Salon();
             salon.Path = fullPath;
+            salon.FileName = fileName;
             //termin.DatumString = termin.Datum.ToString("dd.MM.yyyy HH:mm");
 
             //    termin.TerminTekst = terminP;

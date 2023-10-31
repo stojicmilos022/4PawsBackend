@@ -16,6 +16,11 @@
     flex-direction: column !important;
 	
   }
+  img {
+  width: 200px;
+  height: 300px;
+  object-fit: contain;
+}
 }
 	  </style>
 </head>
@@ -35,17 +40,17 @@
 				  </div>
 				  <div class="col-11 col-lg-4 card  m-3">
 					<h1>SALON SLIKE</h1>
-					<input type="file" id="fileInput" multiple>
-					<button onclick="uploadFiles()" class="btn btn-primary">Upload to Google Drive</button>
-					<div id="uploadStatus"></div>
-					<!-- <img src="https://storage.cloud.google.com/slikesalona/1693514304890.jpg" alt="" class="img-thumbnail img-fluid">					 -->
+					<input type="file" id="fileInputSalon" multiple>
+					<button onclick="uploadFilesSalon()" class="btn btn-primary">Upload to Google Drive</button>
+					<div id="uploadStatusSalon"></div>
 					<div id="salonContainer"></div>
 				  </div>
 				  <div class="col-10 col-lg-4 card m-3">
 					<h1>PSI SLIKE</h1>
-					<input type="file" id="fileInput" multiple />
-					<button onclick="uploadFiles()" class="btn btn-primary">Upload to Google Drive</button>
-					<div id="uploadStatus"></div>				
+					<input type="file" id="fileInputGalery" multiple>
+					<button onclick="uploadFilesGalery()" class="btn btn-primary">Upload to Google Drive</button>
+					<div id="uploadStatusGalery"></div>
+					<div id="galeryContainer"></div>			
 				  </div>				
 	</div>
 </div>

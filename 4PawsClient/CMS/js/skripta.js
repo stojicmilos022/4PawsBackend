@@ -2,7 +2,8 @@
 var host = "https://localhost:";
 var port = "7184/";
 var salonEndpoint = "api/Salon";
-var terminEndpoint="api/Termin/"
+var galeryEndpoint = "api/Galery";
+var terminEndpoint="api/Termin/";
 var pretragaEndpoint = "api/masteri/pretraga";
 var loginEndpoint = "api/authentication/login";
 var registerEndpoint = "api/authentication/register";
@@ -68,6 +69,7 @@ function registerUser() {
 window.onload = function() {
 	loadTermin();
 	fetchSalonImages();
+	fetchGaleryImages();
 };
 
 // prikaz forme za registraciju
@@ -512,13 +514,7 @@ function refreshTable() {
 	document.getElementById("btnMasteri").click();
 };
 
-function clearProdavciForm() {
-	// cistim formu
-	document.getElementById("prodavacName").value = "";
-	document.getElementById("prodavacLastName").value = "";
-	document.getElementById("prodavacBirthYear").value = "";
 
-};
 
 
 
@@ -572,59 +568,12 @@ function submitSearchMasterForm() {
 	return false;
 }
 
-// function uploadFile() {
-//     var url = host + port + salonEndpoint;
-//     //var headers = { 'Content-Type': 'application/json' };
-//     const fileInput = document.getElementById('fileInput');
-//     const uploadStatus = document.getElementById('uploadStatus');
-//     var jwt_token = sessionStorage.getItem("jwt_token");
-
-//     const file = fileInput.files[0];
-
-//     if (!file) {
-//         uploadStatus.innerText = 'Please select a file.';
-//         return;
-//     }
-
-//     const formData = new FormData();
-//     formData.append('file', file);
-
-//     // if (jwt_token) {
-//     //     headers.Authorization = 'Bearer ' + jwt_token;
-//     // }
-
-//     fetch(url, {
-//         method: 'POST',
-// 		headers: {
-// 			Authorization: `Bearer ${jwt_token}`},
-//         body: formData
-//     })
-//         .then(response => {
-//             if (!response.ok) {
-//                 throw new Error(`HTTP Error! Status: ${response.status}`);
-//             }
-//             return response.json(); // Try to parse the response as JSON
-//         })
-//         .then(data => {
-//             // Check if the response contains valid JSON
-// 			console.log(data);
-//             if (data) {
-//                 uploadStatus.innerText = `File uploaded to Google Drive. File ID: ${data}`;
-// 				fetchSalonImages();
-//             } else {
-//                 uploadStatus.innerText = 'Unexpected response format.';
-//             }
-//         })
-//         .catch(error => {
-//             uploadStatus.innerText = `Error: ${error.message}`;
-//         });
-// }
 
 
-function uploadFiles() {
+function uploadFilesSalon() {
     var url = host + port + salonEndpoint;
-    const fileInput = document.getElementById('fileInput');
-    const uploadStatus = document.getElementById('uploadStatus');
+    const fileInput = document.getElementById('fileInputSalon');
+    const uploadStatus = document.getElementById('uploadStatusSalon');
     var jwt_token = sessionStorage.getItem("jwt_token");
 
     const files = fileInput.files;
@@ -672,6 +621,57 @@ function uploadFiles() {
         });
 }
 
+function uploadFilesGalery() {
+    var url = host + port + galeryEndpoint;
+    const fileInput = document.getElementById('fileInputGalery');
+    const uploadStatus = document.getElementById('uploadStatusGalery');
+    var jwt_token = sessionStorage.getItem("jwt_token");
+
+    const files = fileInput.files;
+
+    if (files.length === 0) {
+        uploadStatus.innerText = 'Please select one or more files.';
+        return;
+    }
+
+    const formData = new FormData();
+
+    for (let i = 0; i < files.length; i++) {
+        formData.append('files', files[i]); // Use an array of files, e.g., 'files[]'
+    }
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${jwt_token}`,
+        },
+        body: formData
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP Error! Status: ${response.status}`);
+            }
+            return response.json(); // Try to parse the response as JSON
+        })
+        .then(data => {
+            // Check if the response contains valid JSON
+            console.log(data);
+			if (data) {
+                if (Array.isArray(data)) {
+                    uploadStatus.innerText = `Files uploaded to Google Drive. File IDs: ${data.join(', ')}`;
+                } else {
+                    uploadStatus.innerText = `File uploaded to Google Drive. File ID: ${data}`;
+                }
+                fetchGaleryImages();
+            } else {
+                uploadStatus.innerText = 'Unexpected response format.';
+            }
+        })
+        .catch(error => {
+            uploadStatus.innerText = `Error: ${error.message}`;
+        });
+}
+
 function displaySalonImages(imagePaths) {
     const imageContainer = document.getElementById('salonContainer');
 
@@ -684,13 +684,51 @@ function displaySalonImages(imagePaths) {
       imgElement.src = imagePath.path;
       imgElement.alt = 'Image';
       imgElement.className = 'img-thumbnail img-fluid';
+	//   imgElement.classList.add(  "width: 200px",
+	// 	"height: 300px",
+	// 	"object-fit: contain");
 
 	  const deleteButton = document.createElement('button');
         deleteButton.textContent = 'Delete';
+		deleteButton.classList.add("btn", "btn-danger","position-absolute","end-0");
 		console.log(imagePath.id);
 		deleteButton.name=imagePath.id;
         deleteButton.onclick = function() {
-            deleteImage(imagePath);
+            deleteImageSalon(imagePath);
+			 // Call the deleteImage function with the image path
+        };
+	  const imageDiv = document.createElement('div');
+	  imageDiv.appendChild(imgElement);
+	  imageDiv.appendChild(deleteButton);
+
+      imageContainer.appendChild(imageDiv);
+	  
+    });
+  }
+
+  function displayGaleryImages(imagePaths) {
+    const imageContainer = document.getElementById('galeryContainer');
+
+    // Clear existing images
+    imageContainer.innerHTML = '';
+
+    // Loop through the image paths and create image elements
+    imagePaths.forEach(imagePath => {
+      const imgElement = document.createElement('img');
+      imgElement.src = imagePath.path;
+      imgElement.alt = 'Image';
+      imgElement.className = 'img-thumbnail img-fluid';
+	//   imgElement.classList.add(  "width: 200px",
+	// 	"height: 300px",
+	// 	"object-fit: contain");
+
+	  const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+		deleteButton.classList.add("btn", "btn-danger","position-absolute","end-0");
+		console.log(imagePath.id);
+		deleteButton.name=imagePath.id;
+        deleteButton.onclick = function() {
+            deleteImageGalery(imagePath);
 			 // Call the deleteImage function with the image path
         };
 	  const imageDiv = document.createElement('div');
@@ -713,7 +751,17 @@ function displaySalonImages(imagePaths) {
       .catch(error => console.error(error));
   }
 
-  function deleteImage(imagePath) {
+  function fetchGaleryImages() {
+	var url = host + port + galeryEndpoint;
+    fetch(url) 
+      .then(response => response.json())
+      .then(data => {
+		data.imagePath=
+        displayGaleryImages(data); // Display the images
+      })
+      .catch(error => console.error(error));
+  }
+  function deleteImageSalon(imagePath) {
     // Make an API request to delete the image using the image path
     // You'll need to implement this part
 	var jwt_token = sessionStorage.getItem("jwt_token");
@@ -749,3 +797,26 @@ function displaySalonImages(imagePaths) {
 		.catch(error => console.log(error));
 }      
   
+function deleteImageGalery(imagePath) {
+
+	var jwt_token = sessionStorage.getItem("jwt_token");
+	var deleteID = imagePath.id;
+	console.log(deleteID);
+	var url = host + port + galeryEndpoint+"/"+deleteID.toString();
+
+	var headers = { 'Content-Type': 'application/json' };
+	if (jwt_token) {
+		headers.Authorization = 'Bearer ' + jwt_token;	
+	}
+	fetch(url, { method: "DELETE", headers: headers})
+		.then((response) => {
+			if (response.status === 204) {
+				console.log("Successful action");
+				fetchGaleryImages();
+			} else {
+				console.log("Error occured with code " + response.status);
+				alert("Desila se greska!");
+			}
+		})
+		.catch(error => console.log(error));
+}   

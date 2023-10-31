@@ -73,6 +73,8 @@ namespace _4PawsBackend
             services.AddScoped<ITerminRepository, TerminRepository>();
             services.AddAutoMapper(typeof(SalonProfile));
             services.AddScoped<ISalonRepository, SalonRepository>();
+            services.AddAutoMapper(typeof(GaleryProfile));
+            services.AddScoped<IGaleryRepository, GaleryRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -13,6 +13,7 @@ namespace PawsBackend.Models
     {
         public DbSet<Termin> Termin { get; set; }
         public DbSet<Salon> SalonSlike { get; set; }
+        public DbSet<Galery> GalerySlike { get; set; }
         //public DbSet<Prodavci> Prodavci { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
