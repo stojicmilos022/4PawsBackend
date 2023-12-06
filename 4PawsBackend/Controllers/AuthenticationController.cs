@@ -80,16 +80,16 @@ namespace PawsBackend.Controllers
                 return BadRequest("User already exists");
             }
 
-            ApplicationUser user = new ApplicationUser()
-            {
-                Email = model.Email,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = model.Username
-            };
-            var result = userManager.CreateAsync(user, model.Password).GetAwaiter().GetResult();
-            if (!result.Succeeded) { 
-                return BadRequest("Validation failed! Please check user details and try again.");
-            }
+            //ApplicationUser user = new ApplicationUser()
+            //{
+            //    Email = model.Email,
+            //    SecurityStamp = Guid.NewGuid().ToString(),
+            //    UserName = model.Username
+            //};
+            //var result = userManager.CreateAsync(user, model.Password).GetAwaiter().GetResult();
+            //if (!result.Succeeded) { 
+            //    return BadRequest("Validation failed! Please check user details and try again.");
+            //}
 
             return Ok();
         }

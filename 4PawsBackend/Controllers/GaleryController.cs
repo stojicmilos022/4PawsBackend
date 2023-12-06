@@ -88,7 +88,7 @@ namespace PawsBackend.Controllers
 
         [HttpDelete("{id}")]
         [AllowAnonymous]
-        public IActionResult DeleteSalon(int id)
+        public IActionResult DeleteGelery(int id)
         {
             var galery = _galeryRepository.GetById(id);
             if (galery == null)
@@ -109,7 +109,7 @@ namespace PawsBackend.Controllers
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        public IActionResult GetSalon(int id)
+        public IActionResult GetGalery(int id)
         {
             var Galery = _galeryRepository.GetById(id);
             if (Galery == null)

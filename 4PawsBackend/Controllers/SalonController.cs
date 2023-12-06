@@ -136,7 +136,9 @@ namespace PawsBackend.Controllers
             _salonRepository.DeleteSalon(salon);
             string bucketName = "slikesalona";
             string ?objectName = salon.FileName;
-            GoogleCredential credential = GoogleCredential.FromFile("C:\\Source\\WebDevelopment\\4PawsBackend\\4PawsBackend\\paws-398316-cba858c90847.json");
+            // string googleApiKey = Environment.GetEnvironmentVariable("googleApiKey");
+            string googleApiKey = System.IO.File.ReadAllText("paws-398316-cba858c90847.json");
+            GoogleCredential credential = GoogleCredential.FromJson(googleApiKey);
             var storageClient = StorageClient.Create(credential);
 
 
@@ -156,5 +158,7 @@ namespace PawsBackend.Controllers
 
             return Ok(_mapper.Map<SalonDTO>(Salon));
         }
+
+
     }
 }

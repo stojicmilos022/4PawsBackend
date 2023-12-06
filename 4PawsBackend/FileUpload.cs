@@ -2,6 +2,7 @@
 using Google.Apis.Drive.v3;
 using Google.Cloud.Storage.V1;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 
 namespace PawsBackend
 {
@@ -17,9 +18,22 @@ namespace PawsBackend
             string fileName = Path.GetFileName(file.FileName);
             string filePath = Path.GetFullPath(file.FileName);
             //string objectName = "file.txt"; // Replace with the desired object name in the bucket
+            //string googleApiKey = Environment.GetEnvironmentVariable("googleApiKey");
 
+            string googleApiKey=System.IO.File.ReadAllText("paws-398316-cba858c90847.json");
+
+            if (string.IsNullOrWhiteSpace(googleApiKey))
+            {
+                // Handle the case where the environment variable is not set or is empty.
+                Console.WriteLine("Google API key is not set.");
+                // You should add error handling logic here
+                return null;
+            }
             // Authenticate with Google Cloud using a service account key file
-            GoogleCredential credential = GoogleCredential.FromFile("C:\\Source\\WebDevelopment\\4PawsBackend\\4PawsBackend\\paws-398316-cba858c90847.json");
+
+
+            GoogleCredential credential = GoogleCredential.FromJson(googleApiKey);
+            //GoogleCredential credential = GoogleCredential.FromJson(googleApiKey);
             StorageClient storageClient = StorageClient.Create(credential);
 
             // Upload the file to Google Cloud Storage
